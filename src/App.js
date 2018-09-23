@@ -1,30 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import Home from './components/Home';
-import About from './components/About';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Menu from './components/Menu';
-import NotFound from './components/NotFound';
-
-
-const MenuLink = ({label, to, activeOnlyWhenExact }) => {
-  return (
-    <Route
-      path={to}
-      exact={activeOnlyWhenExact}
-      children={({match}) => {
-        var active = match ? 'active' : '';
-        return (
-          <li className={`item ${active}`}>
-            <Link to={to}>
-              {label}
-            </Link>
-          </li>
-        )
-      }}
-    />
-  )
-}
+import routes from './routes';
 class App extends Component {
   render() {
     return (
@@ -32,13 +10,22 @@ class App extends Component {
         <div className="App">
           <Menu />
           <Switch>
-            <Route path="/" exact component = {Home} />
-            <Route path="/about" component = {About} />
-            <Route component = {NotFound} />
+            {this.showRoutes(routes)}
           </Switch>
         </div>
       </Router>
     );
+  }
+  showRoutes = (routes) => {
+    var result = null;
+    if(routes.length > 1) {
+      result = routes.map((route, index)=>{
+        return (
+          <Route key={index} path={route.path} exact={route.exact} component = {route.main} />
+        )
+      });
+    }
+    return result;
   }
 }
 
